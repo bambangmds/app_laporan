@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "cus_code": "C001",
+    "Cus_Code": "C001",
+    "tgl_proyek": "2026-03-15",
+    "Tgl_Proyek": "2026-03-15",
+    "nilai_pro": 120000000,
+    "Nilai_Pro": 120000000,
+    "keterangan": "Pengadaan Mesin Giling Kopi Industri",
+    "no_po": "PO-2026-001",
+    "bia_kom": 5000000
+  },
+  {
+    "id": 2,
+    "cus_code": "C001",
+    "Cus_Code": "C001",
+    "tgl_proyek": "2026-06-20",
+    "Tgl_Proyek": "2026-06-20",
+    "nilai_pro": 45000000,
+    "Nilai_Pro": 45000000,
+    "keterangan": "Pemasangan Sistem Drainase Air Limbah",
+    "no_po": "PO-2026-002",
+    "bia_kom": 2000000
+  },
+  {
+    "id": 3,
+    "cus_code": "C002",
+    "Cus_Code": "C002",
+    "tgl_proyek": "2026-04-10",
+    "Tgl_Proyek": "2026-04-10",
+    "nilai_pro": 85000000,
+    "Nilai_Pro": 85000000,
+    "keterangan": "Sewa Alat Berat & Backhoe Loader",
+    "no_po": "PO-2026-003",
+    "bia_kom": 3500000
+  },
+  {
+    "id": 4,
+    "cus_code": "C003",
+    "Cus_Code": "C003",
+    "tgl_proyek": "2026-08-05",
+    "Tgl_Proyek": "2026-08-05",
+    "nilai_pro": 150000000,
+    "Nilai_Pro": 150000000,
+    "keterangan": "Suplai Biji Kopi Gayo & Robusta Bulanan",
+    "no_po": "PO-2026-004",
+    "bia_kom": 7000000
+  },
+  {
+    "id": 5,
+    "cus_code": "C004",
+    "Cus_Code": "C004",
+    "tgl_proyek": "2026-05-12",
+    "Tgl_Proyek": "2026-05-12",
+    "nilai_pro": 95000000,
+    "Nilai_Pro": 95000000,
+    "keterangan": "Renovasi Interior & Barista Station",
+    "no_po": "PO-2026-005",
+    "bia_kom": 4000000
+  },
+  {
+    "id": 6,
+    "cus_code": "C005",
+    "Cus_Code": "C005",
+    "tgl_proyek": "2026-11-20",
+    "Tgl_Proyek": "2026-11-20",
+    "nilai_pro": 200000000,
+    "Nilai_Pro": 200000000,
+    "keterangan": "Pembangunan Depot Penyimpanan Biji Kopi",
+    "no_po": "PO-2026-006",
+    "bia_kom": 10000000
+  }
+]

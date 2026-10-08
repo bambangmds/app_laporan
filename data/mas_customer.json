@@ -1,0 +1,27 @@
+[
+  {
+    "Cus_Code": "C001",
+    "Cus_Name": "PT Sinar Abadi",
+    "PKP": "Y"
+  },
+  {
+    "Cus_Code": "C002",
+    "Cus_Name": "Kafe Kopi Kita",
+    "PKP": "Y"
+  },
+  {
+    "Cus_Code": "C003",
+    "Cus_Name": "Hotel Grand Kemang",
+    "PKP": "Y"
+  },
+  {
+    "Cus_Code": "C004",
+    "Cus_Name": "Bakeri Citra Rasa",
+    "PKP": "N"
+  },
+  {
+    "Cus_Code": "C005",
+    "Cus_Name": "Distributor Agung",
+    "PKP": "Y"
+  }
+]

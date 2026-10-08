@@ -1,0 +1,8 @@
+{
+  "name": "SalesFlow-Fix-7",
+  "description": "A elegant and robust full-stack sales data dashboard and CRUD application built with React, Node.js (Express), and MySQL support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
