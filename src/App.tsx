@@ -91,17 +91,7 @@ export default function App(): any {
   const [loginErrorMsg, setLoginErrorMsg] = useState<string | null>(null);
   const [isSubmittingLogin, setIsSubmittingLogin] = useState<boolean>(false);
 
-  const [loggedInUser, setLoggedInUser] = useState<UserJPU | null>(() => {
-    const saved = localStorage.getItem('jpu_logged_user');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch (e) {
-        return null;
-      }
-    }
-    return null;
-  });
+  const [loggedInUser, setLoggedInUser] = useState<UserJPU | null>(null);
 
   const isLoggedIn = !!loggedInUser;
 
@@ -3009,7 +2999,17 @@ export default function App(): any {
                       setSelectedUserId('');
                       setPasswordInput('');
                       setLoginErrorMsg(null);
-                      showToast('Sesi formulir login telah dibersihkan.', 'info');
+                      localStorage.removeItem('jpu_logged_user');
+                      showToast('Layar dibersihkan. Keluar aplikasi...', 'info');
+                      try {
+                        if (window.history.length > 1) {
+                          window.history.back();
+                        } else {
+                          window.close();
+                        }
+                      } catch (e) {
+                        window.location.href = '/';
+                      }
                     }}
                     className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white border border-emerald-500/40 rounded-xl font-extrabold text-sm transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20 shrink-0 active:scale-[0.99]"
                     title="Reset Form Login / Keluar Sesi"

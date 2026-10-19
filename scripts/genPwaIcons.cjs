@@ -2,17 +2,22 @@ const fs = require('fs');
 const path = require('path');
 const { Resvg } = require('@resvg/resvg-js');
 
-// Create centered square SVG wrapper for standard icon
+// Create square SVG with Light Gray background and Blue border list
 function createSquareSvg(width, height, isMaskable = false) {
-  const padding = isMaskable ? width * 0.2 : width * 0.12;
+  const borderWidth = Math.max(6, Math.round(width * 0.035));
+  const cornerRadius = width * 0.22;
+  const padding = isMaskable ? width * 0.22 : width * 0.14;
   const logoWidth = width - padding * 2;
   const logoHeight = logoWidth * (90 / 140);
   const logoX = padding;
   const logoY = (height - logoHeight) / 2;
 
+  // Light gray background (#F1F5F9 / #E2E8F0) with vivid blue list border (#2563EB / #1D4ED8)
   const bgRect = isMaskable 
-    ? `<rect width="${width}" height="${height}" fill="#0F172A" />` 
-    : `<rect width="${width}" height="${height}" rx="${width * 0.2}" fill="#FFFFFF" />`;
+    ? `<rect width="${width}" height="${height}" fill="#E2E8F0" />
+       <rect x="${borderWidth}" y="${borderWidth}" width="${width - borderWidth * 2}" height="${height - borderWidth * 2}" fill="#F8FAFC" stroke="#2563EB" stroke-width="${borderWidth * 2}" />` 
+    : `<rect width="${width}" height="${height}" rx="${cornerRadius}" fill="#E2E8F0" />
+       <rect x="${borderWidth}" y="${borderWidth}" width="${width - borderWidth * 2}" height="${height - borderWidth * 2}" rx="${cornerRadius - borderWidth}" fill="#F8FAFC" stroke="#2563EB" stroke-width="${borderWidth * 2}" />`;
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
   ${bgRect}
