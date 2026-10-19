@@ -1,6 +1,6 @@
 {
-  "name": "SalesFlow-Fix-7",
-  "description": "A elegant and robust full-stack sales data dashboard and CRUD application built with React, Node.js (Express), and MySQL support.",
+  "name": "Manajemen-Laporan-JPU",
+  "description": "Dilengkapi pencarian biaya per kategori dan per nonta/bon: di 3 sub menu Biaya Per Proyek",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

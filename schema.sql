@@ -87,3 +87,26 @@ INSERT INTO proyek (Cus_Code, Tgl_Proyek, Nilai_Pro) VALUES
 -- WHERE a.Tgl_Proyek BETWEEN '2026-01-01' AND '2026-09-30'
 --   AND b.PKP = 'Y'
 -- GROUP BY a.Cus_Code, b.Cus_Name ORDER BY b.Cus_Name;
+
+
+-- ==========================================================
+-- MODUL BARU: Database SDM & Tabel User_JPU (Otentikasi)
+-- ==========================================================
+
+CREATE DATABASE IF NOT EXISTS SDM;
+USE SDM;
+
+CREATE TABLE IF NOT EXISTS User_JPU (
+  User_ID CHAR(5) PRIMARY KEY,
+  User_Name VARCHAR(25) NOT NULL,
+  User_Psw CHAR(8) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO User_JPU (User_ID, User_Name, User_Psw) VALUES
+('ADM01', 'Ahmad Subagja', '123456'),
+('MGR01', 'Budi Santoso', 'admin123'),
+('STF01', 'Citra Dewi', 'jpu2026'),
+('USR01', 'Doni Pratama', 'pass1234'),
+('DIR01', 'Eka Rahmawati', 'sdm1234')
+ON DUPLICATE KEY UPDATE User_Name=VALUES(User_Name), User_Psw=VALUES(User_Psw);
+

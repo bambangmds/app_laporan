@@ -1,0 +1,10 @@
+[
+  { "No_Voucher": "VK-2026-001", "Acc_ID": "6101", "Jumlah": 12500000, "Ket_Detail": "Pembayaran Gaji Staf Operasional Office" },
+  { "No_Voucher": "VK-2026-002", "Acc_ID": "6102", "Jumlah": 4500000, "Ket_Detail": "Sewa Gedung Kantor & Listrik/Air" },
+  { "No_Voucher": "VK-2026-003", "Acc_ID": "6103", "Jumlah": 8200000, "Ket_Detail": "Pemeliharaan Mesin & Peralatan Workshop" },
+  { "No_Voucher": "VK-2026-004", "Acc_ID": "6104", "Jumlah": 3500000, "Ket_Detail": "Biaya Software & Lisensi Server Office" },
+  { "No_Voucher": "VK-2026-005", "Acc_ID": "6103", "Jumlah": 6800000, "Ket_Detail": "Perbaikan Peralatan Bengkel & Bengkel Wks" },
+  { "No_Voucher": "VK-2026-006", "Acc_ID": "6105", "Jumlah": 2400000, "Ket_Detail": "Biaya ATK, Cetak & Perlengkapan Kantor" },
+  { "No_Voucher": "VK-2026-007", "Acc_ID": "6106", "Jumlah": 5100000, "Ket_Detail": "Transportasi, Bensin & BBM Kendaraan Dinas Wks" },
+  { "No_Voucher": "VK-2026-008", "Acc_ID": "6101", "Jumlah": 3900000, "Ket_Detail": "Tunjangan Lembur Staf Kantor Office" }
+]

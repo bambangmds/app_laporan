@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 220" fill="none">
+  <defs>
+    <!-- Gold Gradient for Key -->
+    <linearGradient id="gold-key-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FACC15" />
+      <stop offset="50%" stop-color="#EAB308" />
+      <stop offset="100%" stop-color="#CA8A04" />
+    </linearGradient>
+
+    <!-- Red Gradient for Swoosh Arc -->
+    <linearGradient id="red-arc-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444" />
+      <stop offset="50%" stop-color="#DC2626" />
+      <stop offset="100%" stop-color="#991B1B" />
+    </linearGradient>
+
+    <!-- Dark Red Text Gradient -->
+    <linearGradient id="dark-red-text" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7F1D1D" />
+      <stop offset="100%" stop-color="#991B1B" />
+    </linearGradient>
+  </defs>
+
+  <!-- Left Red Swoosh Arc Cradling the Key Bow -->
+  <path 
+    d="M 12 145 C 5 180, 35 210, 85 208 C 50 205, 25 185, 28 152 C 30 135, 42 118, 55 105 C 32 120, 15 130, 12 145 Z" 
+    fill="url(#red-arc-grad)" 
+  />
+
+  <!-- Golden Key Group -->
+  <g>
+    <!-- Key Shaft -->
+    <rect x="52" y="25" width="16" height="110" rx="2" fill="url(#gold-key-grad)" />
+
+    <!-- Key Teeth / Blade (left side notches) -->
+    <path 
+      d="M 52 25 L 36 25 L 36 36 L 44 36 L 44 44 L 36 44 L 36 58 L 46 58 L 46 66 L 38 66 L 38 78 L 52 78 Z" 
+      fill="url(#gold-key-grad)" 
+    />
+    
+    <!-- Key Tip (Top) -->
+    <path d="M 52 25 L 60 10 L 68 25 Z" fill="url(#gold-key-grad)" />
+
+    <!-- Key Bow (Round Head at Bottom) with Hole -->
+    <path 
+      fill-rule="evenodd" 
+      clip-rule="evenodd" 
+      d="M 60 120 C 82 120, 100 138, 100 160 C 100 182, 82 200, 60 200 C 38 200, 20 182, 20 160 C 20 138, 38 120, 60 120 Z M 60 146 C 68 146, 74 152, 74 160 C 74 168, 68 174, 60 174 C 52 174, 46 168, 46 160 C 46 152, 52 146, 60 146 Z" 
+      fill="url(#gold-key-grad)" 
+    />
+  </g>
+
+  <!-- Vertical Text 'Sukses' on the Right Side -->
+  <g transform="translate(132, 15) rotate(90)">
+    <text 
+      x="0" 
+      y="0" 
+      fill="url(#dark-red-text)" 
+      font-size="46" 
+      font-weight="bold" 
+      font-family="Georgia, 'Times New Roman', serif" 
+      letter-spacing="2"
+    >
+      Sukses
+    </text>
+  </g>
+</svg>

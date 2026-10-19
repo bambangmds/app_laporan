@@ -1,0 +1,8 @@
+[
+  { "Acc_ID": "6101", "Acc_Name": "Biaya Gaji & Honorarium Staf Kantor" },
+  { "Acc_ID": "6102", "Acc_Name": "Biaya Sewa Tempat, Listrik & Air Kantor" },
+  { "Acc_ID": "6103", "Acc_Name": "Biaya Pemeliharaan & Peralatan Workshop" },
+  { "Acc_ID": "6104", "Acc_Name": "Biaya Software, Internet & Lisensi Server" },
+  { "Acc_ID": "6105", "Acc_Name": "Biaya ATK, Cetak & Perlengkapan Admin" },
+  { "Acc_ID": "6106", "Acc_Name": "Biaya Transportasi, Bensin & BBM Operasional" }
+]

@@ -9,7 +9,8 @@
     "Nilai_Pro": 120000000,
     "keterangan": "Pengadaan Mesin Giling Kopi Industri",
     "no_po": "PO-2026-001",
-    "bia_kom": 5000000
+    "bia_kom": 5000000,
+    "Persen_Progress": 65
   },
   {
     "id": 2,
@@ -21,7 +22,8 @@
     "Nilai_Pro": 45000000,
     "keterangan": "Pemasangan Sistem Drainase Air Limbah",
     "no_po": "PO-2026-002",
-    "bia_kom": 2000000
+    "bia_kom": 2000000,
+    "Persen_Progress": 40
   },
   {
     "id": 3,
@@ -33,7 +35,8 @@
     "Nilai_Pro": 85000000,
     "keterangan": "Sewa Alat Berat & Backhoe Loader",
     "no_po": "PO-2026-003",
-    "bia_kom": 3500000
+    "bia_kom": 3500000,
+    "Persen_Progress": 80
   },
   {
     "id": 4,
@@ -45,7 +48,8 @@
     "Nilai_Pro": 150000000,
     "keterangan": "Suplai Biji Kopi Gayo & Robusta Bulanan",
     "no_po": "PO-2026-004",
-    "bia_kom": 7000000
+    "bia_kom": 7000000,
+    "Persen_Progress": 100
   },
   {
     "id": 5,
@@ -57,7 +61,8 @@
     "Nilai_Pro": 95000000,
     "keterangan": "Renovasi Interior & Barista Station",
     "no_po": "PO-2026-005",
-    "bia_kom": 4000000
+    "bia_kom": 4000000,
+    "Persen_Progress": 50
   },
   {
     "id": 6,
@@ -69,6 +74,7 @@
     "Nilai_Pro": 200000000,
     "keterangan": "Pembangunan Depot Penyimpanan Biji Kopi",
     "no_po": "PO-2026-006",
-    "bia_kom": 10000000
+    "bia_kom": 10000000,
+    "Persen_Progress": 25
   }
 ]

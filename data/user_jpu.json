@@ -1,0 +1,27 @@
+[
+  {
+    "User_ID": "ADM01",
+    "User_Name": "Ahmad Subagja",
+    "User_Psw": "123456"
+  },
+  {
+    "User_ID": "MGR01",
+    "User_Name": "Budi Santoso",
+    "User_Psw": "admin123"
+  },
+  {
+    "User_ID": "STF01",
+    "User_Name": "Citra Dewi",
+    "User_Psw": "jpu2026"
+  },
+  {
+    "User_ID": "USR01",
+    "User_Name": "Doni Pratama",
+    "User_Psw": "pass1234"
+  },
+  {
+    "User_ID": "DIR01",
+    "User_Name": "Eka Rahmawati",
+    "User_Psw": "sdm1234"
+  }
+]

@@ -1,0 +1,10 @@
+[
+  { "No_Voucher": "VK-2026-001", "Tgl_Voucher": "2026-01-15", "Total": 12500000, "Divisi": "Off" },
+  { "No_Voucher": "VK-2026-002", "Tgl_Voucher": "2026-02-10", "Total": 4500000, "Divisi": "Off" },
+  { "No_Voucher": "VK-2026-003", "Tgl_Voucher": "2026-03-05", "Total": 8200000, "Divisi": "Wks" },
+  { "No_Voucher": "VK-2026-004", "Tgl_Voucher": "2026-04-12", "Total": 3500000, "Divisi": "Off" },
+  { "No_Voucher": "VK-2026-005", "Tgl_Voucher": "2026-05-20", "Total": 6800000, "Divisi": "Wks" },
+  { "No_Voucher": "VK-2026-006", "Tgl_Voucher": "2026-06-18", "Total": 2400000, "Divisi": "Off" },
+  { "No_Voucher": "VK-2026-007", "Tgl_Voucher": "2026-07-25", "Total": 5100000, "Divisi": "Wks" },
+  { "No_Voucher": "VK-2026-008", "Tgl_Voucher": "2026-08-14", "Total": 3900000, "Divisi": "Off" }
+]
