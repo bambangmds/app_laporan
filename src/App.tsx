@@ -448,6 +448,8 @@ export default function App(): any {
   const [voucherCostsLoading, setVoucherCostsLoading] = useState<boolean>(false);
   const [voucherCostsError, setVoucherCostsError] = useState<string | null>(null);
   const [voucherCostsMeta, setVoucherCostsMeta] = useState<any | null>(null);
+  const [categorySearchQuery, setCategorySearchQuery] = useState<string>('');
+  const [voucherSearchQuery, setVoucherSearchQuery] = useState<string>('');
 
   const fetchCategoryCosts = async (noProyek: string) => {
     setCategoryCostsLoading(true);
@@ -4935,6 +4937,26 @@ ORDER BY b.Cus_Name;`}
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2.5">
+                      <div className="relative">
+                        <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        <input
+                          type="text"
+                          placeholder="Cari Kategori Biaya..."
+                          value={categorySearchQuery}
+                          onChange={(e) => setCategorySearchQuery(e.target.value)}
+                          className="pl-8 pr-7 py-1.5 text-xs bg-slate-950 border border-slate-700/80 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 w-48 sm:w-56 transition-all"
+                        />
+                        {categorySearchQuery && (
+                          <button
+                            onClick={() => setCategorySearchQuery('')}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white cursor-pointer"
+                            title="Bersihkan pencarian"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+
                       <button
                         onClick={() => {
                           const el = document.getElementById('category-sql-peek-page');
@@ -4985,9 +5007,35 @@ ORDER BY b.Cus_Name;`}
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-800 text-slate-300">
-                          {categoryCosts.map((item: any, idx: number) => {
-                            const totalSum = categoryCosts.reduce((acc: number, c: any) => acc + Number(c.TotKat || 0), 0) || 1;
-                            const ratio = ((Number(item.TotKat || 0) / totalSum) * 100).toFixed(1);
+                          {(() => {
+                            const filteredCategoryCosts = categoryCosts.filter((item: any) => {
+                              if (!categorySearchQuery.trim()) return true;
+                              const q = categorySearchQuery.toLowerCase().trim();
+                              const nama = (item.Nama_Kategori || item.nama_kategori || '').toLowerCase();
+                              const kode = (item.Kode_Kategori || item.kode_kategori || '').toLowerCase();
+                              return nama.includes(q) || kode.includes(q);
+                            });
+
+                            if (filteredCategoryCosts.length === 0) {
+                              return (
+                                <tr>
+                                  <td colSpan={3} className="py-8 text-center text-slate-400 text-xs">
+                                    <span>Tidak ditemukan kategori biaya dengan pencarian "<strong>{categorySearchQuery}</strong>".</span>
+                                    <button
+                                      onClick={() => setCategorySearchQuery('')}
+                                      className="ml-2 text-indigo-400 hover:underline font-bold cursor-pointer"
+                                    >
+                                      Bersihkan Pencarian
+                                    </button>
+                                  </td>
+                                </tr>
+                              );
+                            }
+
+                            return filteredCategoryCosts.map((item: any, idx: number) => {
+                              const totalSum = categoryCosts.reduce((acc: number, c: any) => acc + Number(c.TotKat || 0), 0) || 1;
+                              const ratio = ((Number(item.TotKat || 0) / totalSum) * 100).toFixed(1);
+
                             
                             const barGradients = [
                               'from-emerald-400 to-emerald-500',
@@ -5032,7 +5080,8 @@ ORDER BY b.Cus_Name;`}
                                 </td>
                               </tr>
                             );
-                          })}
+                          });
+                        })()}
                           {/* Summary row */}
                           <tr className="bg-slate-950 font-extrabold border-t-2 border-slate-800 text-white">
                             <td colSpan={2} className="py-3 px-4 text-right font-sans text-xs tracking-wider">Total Biaya Proyek Saat Ini :</td>
@@ -5084,6 +5133,26 @@ ORDER BY b.Cus_Name;`}
                     </div>
 
                     <div className="flex flex-wrap items-center gap-2.5">
+                      <div className="relative">
+                        <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        <input
+                          type="text"
+                          placeholder="Cari Uraian Biaya / No. Voucher..."
+                          value={voucherSearchQuery}
+                          onChange={(e) => setVoucherSearchQuery(e.target.value)}
+                          className="pl-8 pr-7 py-1.5 text-xs bg-slate-950 border border-slate-700/80 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-400 focus:border-indigo-400 w-52 sm:w-64 transition-all"
+                        />
+                        {voucherSearchQuery && (
+                          <button
+                            onClick={() => setVoucherSearchQuery('')}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white cursor-pointer"
+                            title="Bersihkan pencarian"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+
                       <button
                         onClick={() => {
                           const el = document.getElementById('voucher-sql-peek-page');
@@ -5130,31 +5199,57 @@ ORDER BY b.Cus_Name;`}
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-800 text-slate-300">
-                          {voucherCosts.map((item: any, idx: number) => {
-                            const uraianText = item.Ket_Detail || item.ket_detail || item.Keterangan || item.keterangan || 'Tanpa Keterangan';
-                            
-                            return (
-                              <tr key={idx} className="hover:bg-slate-800/35 transition-colors">
-                                <td className="py-2.5 px-3 text-center font-mono text-slate-500 font-semibold w-12 shrink-0">
-                                  {idx + 1}
-                                </td>
-                                <td className="py-2.5 px-4 font-mono text-amber-400 font-bold w-36 shrink-0">
-                                  <span className="bg-amber-950/50 border border-amber-900/30 px-2.5 py-1 rounded-md text-[11px] whitespace-nowrap inline-block">
-                                    {item.No_Voucher || item.no_voucher}
-                                  </span>
-                                </td>
-                                <td className="py-2.5 px-4 text-center font-mono text-slate-400 w-28 shrink-0 whitespace-nowrap">
-                                  {formatDateIndo(item.Tgl_Voucher || item.tgl_voucher || '')}
-                                </td>
-                                <td className="py-2.5 px-4 font-semibold text-white break-words leading-relaxed">
-                                  {uraianText}
-                                </td>
-                                <td className="py-2.5 px-4 text-right font-mono font-bold text-emerald-400 w-36 shrink-0 whitespace-nowrap">
-                                  {formatRupiah(Number(item.Jumlah || item.jumlah || 0))}
-                                </td>
-                              </tr>
-                            );
-                          })}
+                          {(() => {
+                            const filteredVoucherCosts = voucherCosts.filter((item: any) => {
+                              if (!voucherSearchQuery.trim()) return true;
+                              const q = voucherSearchQuery.toLowerCase().trim();
+                              const uraianText = (item.Ket_Detail || item.ket_detail || item.Keterangan || item.keterangan || '').toLowerCase();
+                              const noVoucher = (item.No_Voucher || item.no_voucher || '').toLowerCase();
+                              return uraianText.includes(q) || noVoucher.includes(q);
+                            });
+
+                            if (filteredVoucherCosts.length === 0) {
+                              return (
+                                <tr>
+                                  <td colSpan={5} className="py-8 text-center text-slate-400 text-xs">
+                                    <span>Tidak ditemukan uraian biaya dengan pencarian "<strong>{voucherSearchQuery}</strong>".</span>
+                                    <button
+                                      onClick={() => setVoucherSearchQuery('')}
+                                      className="ml-2 text-indigo-400 hover:underline font-bold cursor-pointer"
+                                    >
+                                      Bersihkan Pencarian
+                                    </button>
+                                  </td>
+                                </tr>
+                              );
+                            }
+
+                            return filteredVoucherCosts.map((item: any, idx: number) => {
+                              const uraianText = item.Ket_Detail || item.ket_detail || item.Keterangan || item.keterangan || 'Tanpa Keterangan';
+                              
+                              return (
+                                <tr key={idx} className="hover:bg-slate-800/35 transition-colors">
+                                  <td className="py-2.5 px-3 text-center font-mono text-slate-500 font-semibold w-12 shrink-0">
+                                    {idx + 1}
+                                  </td>
+                                  <td className="py-2.5 px-4 font-mono text-amber-400 font-bold w-36 shrink-0">
+                                    <span className="bg-amber-950/50 border border-amber-900/30 px-2.5 py-1 rounded-md text-[11px] whitespace-nowrap inline-block">
+                                      {item.No_Voucher || item.no_voucher}
+                                    </span>
+                                  </td>
+                                  <td className="py-2.5 px-4 text-center font-mono text-slate-400 w-28 shrink-0 whitespace-nowrap">
+                                    {formatDateIndo(item.Tgl_Voucher || item.tgl_voucher || '')}
+                                  </td>
+                                  <td className="py-2.5 px-4 font-semibold text-white break-words leading-relaxed">
+                                    {uraianText}
+                                  </td>
+                                  <td className="py-2.5 px-4 text-right font-mono font-bold text-emerald-400 w-36 shrink-0 whitespace-nowrap">
+                                    {formatRupiah(Number(item.Jumlah || item.jumlah || 0))}
+                                  </td>
+                                </tr>
+                              );
+                            });
+                          })()}
                           {/* Summary row */}
                           <tr className="bg-slate-950 font-extrabold border-t-2 border-slate-800 text-white">
                             <td colSpan={4} className="py-3 px-4 text-right font-sans text-xs tracking-wider">TOTAL BIAYA VOUCHER KATEGORI INI :</td>
