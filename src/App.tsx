@@ -1308,7 +1308,7 @@ export default function App(): any {
                 </div>
                 <div class="header-right">
                   <div style="padding: 5px 10px; background-color: #0f172a; color: #fbbf24; font-weight: 800; font-size: 11px; border-radius: 6px; text-transform: uppercase; display: inline-block; letter-spacing: 0.3px;">
-                    OPSI: ${pembayaranHutangOption === 'hitung' ? 'PEMBAYARAN HUTANG DIHITUNG' : 'PEMBAYARAN HUTANG TIDAK DIHITUNG'}
+                    OPSI: ${pembayaranHutangOption === 'hitung' ? 'PEMBAYARAN CICILAN DIHITUNG' : 'PEMBAYARAN CICILAN TIDAK DIHITUNG'}
                   </div>
                   <div style="font-size: 11.5px; font-weight: 700; color: #1e293b; margin-top: 4px;">Dicetak: <span style="font-family: monospace; font-size: 12px; font-weight: 700; color: #0f172a;">${printDateStr}</span></div>
                   <div style="font-size: 11px; font-weight: 700; color: #1e293b; margin-top: 2px;">Admin: <span style="font-family: monospace; font-size: 11.5px; font-weight: 800; color: #0f172a;">${loggedInUser?.User_Name || 'Admin JPU'} (${loggedInUser?.User_ID || 'SDM'})</span></div>
@@ -2106,7 +2106,7 @@ export default function App(): any {
             </div>
             <div style="display: table-cell; vertical-align: top; text-align: right;">
               <div style="padding: 5px 10px; background-color: #0f172a; color: #fbbf24; font-weight: 800; font-size: 11px; border-radius: 6px; text-transform: uppercase; display: inline-block; letter-spacing: 0.3px;">
-                OPSI: ${pembayaranHutangOption === 'hitung' ? 'PEMBAYARAN HUTANG DIHITUNG' : 'PEMBAYARAN HUTANG TIDAK DIHITUNG'}
+                OPSI: ${pembayaranHutangOption === 'hitung' ? 'PEMBAYARAN CICILAN DIHITUNG' : 'PEMBAYARAN CICILAN TIDAK DIHITUNG'}
               </div>
               <div style="font-size: 11.5px; font-weight: 700; color: #1e293b; margin-top: 4px;">Dicetak: <span style="font-family: monospace; font-size: 12px; font-weight: 700; color: #0f172a;">${printDateStr}</span></div>
               <div style="font-size: 10.5px; font-weight: 600; color: #475569; margin-top: 2px;">Admin: <b style="color: #0f172a;">${loggedInUser?.User_Name || 'Admin JPU'}</b> (${loggedInUser?.User_ID || 'SDM'})</div>
@@ -3895,13 +3895,13 @@ ORDER BY b.Cus_Name;`}
           {activeView === 'overhead' && (
             <div className="space-y-6 py-6 animate-fadeIn">
 
-              {/* Container/Frame Option Pembayaran Hutang */}
+              {/* Container/Frame Option Pembayaran Cicilan */}
               <div className="bg-slate-900 border border-slate-800 p-3.5 rounded-2xl shadow-xl text-white space-y-2.5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-2">
                   <div className="flex items-center gap-2">
                     <Sliders className="w-4 h-4 text-amber-400" />
                     <h3 className="font-bold text-white text-xs uppercase tracking-wider">
-                      OPSI PERHITUNGAN PEMBAYARAN HUTANG
+                      OPSI PERHITUNGAN PEMBAYARAN CICILAN
                     </h3>
                   </div>
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold w-fit">
@@ -3928,7 +3928,7 @@ ORDER BY b.Cus_Name;`}
                     />
                     <div>
                       <span className="block text-xs font-extrabold text-amber-300">
-                        Pembayaran Hutang diHitung
+                        Pembayaran Cicilan diHitung
                       </span>
                     </div>
                   </label>
@@ -3951,7 +3951,7 @@ ORDER BY b.Cus_Name;`}
                     />
                     <div>
                       <span className="block text-xs font-extrabold text-amber-300">
-                        Pembayaran Hutang Tidak diHitung
+                        Pembayaran Cicilan Tidak diHitung
                       </span>
                     </div>
                   </label>
@@ -4028,7 +4028,7 @@ ORDER BY b.Cus_Name;`}
                           </button>
                         </div>
                         <div className="text-[10px] text-slate-400 mt-2 font-mono">
-                          {itemsList.length} Akun Biaya Terelasi {pembayaranHutangOption === 'tidak_hitung' && '(3 Hutang Excl.)'}
+                          {itemsList.length} Akun Biaya Terelasi {pembayaranHutangOption === 'tidak_hitung' && '(3 Cicilan Excl.)'}
                         </div>
                       </div>
 

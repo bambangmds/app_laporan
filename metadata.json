@@ -1,6 +1,6 @@
 {
-  "name": "Manajemen-Laporan-JPU",
-  "description": "Dilengkapi pencarian biaya per kategori dan per nonta/bon: di 3 sub menu Biaya Per Proyek",
+  "name": "Manajemen-Laporan-JPU-01",
+  "description": "Perubahan teks Pembayaran Hutang menjadi Pembayaran Cicilan di OH",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
