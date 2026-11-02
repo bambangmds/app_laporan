@@ -1227,7 +1227,7 @@ export default function App(): any {
             </td>
             <td style="padding: 7px 10px; font-weight: 700; border-bottom: 1px solid #e2e8f0; color: #0f172a;">
               ${item.Acc_Name}
-              ${isDebt ? `<span style="font-size: 10px; padding: 2px 6px; background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 4px; margin-left: 6px; color: #92400e; font-weight: bold;">Pembayaran Hutang</span>` : ''}
+              ${isDebt ? `<span style="font-size: 10px; padding: 2px 6px; background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 4px; margin-left: 6px; color: #92400e; font-weight: bold;">Pembayaran Cicilan</span>` : ''}
             </td>
             <td style="padding: 7px 10px; text-align: center; font-family: monospace; font-size: 11.5px; border-bottom: 1px solid #e2e8f0; color: #4338ca; font-weight: 600;">${item.Total_Voucher} Transaksi</td>
             <td style="padding: 7px 10px; text-align: right; font-family: monospace; font-size: 11.5px; font-weight: bold; border-bottom: 1px solid #e2e8f0; color: #0f172a;">${amountText}</td>
@@ -2080,7 +2080,7 @@ export default function App(): any {
             </td>
             <td style="padding: 7px 10px; font-weight: 700; border-bottom: 1px solid #e2e8f0; color: #0f172a;">
               ${item.Acc_Name}
-              ${isDebt ? `<span style="font-size: 10px; padding: 2px 6px; background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 4px; margin-left: 6px; color: #92400e; font-weight: bold;">Pembayaran Hutang</span>` : ''}
+              ${isDebt ? `<span style="font-size: 10px; padding: 2px 6px; background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 4px; margin-left: 6px; color: #92400e; font-weight: bold;">Pembayaran Cicilan</span>` : ''}
             </td>
             <td style="padding: 7px 10px; text-align: center; font-family: monospace; border-bottom: 1px solid #e2e8f0; color: #4338ca; font-weight: 600;">${item.Total_Voucher} Transaksi</td>
             <td style="padding: 7px 10px; text-align: right; font-family: monospace; font-weight: bold; border-bottom: 1px solid #e2e8f0; color: #0f172a;">${amountText}</td>
@@ -4169,7 +4169,7 @@ ORDER BY Total_Jumlah DESC;`}
                                         <span>{item.Acc_Name}</span>
                                         {isDebt && (
                                           <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-bold border border-amber-400/40">
-                                            Pembayaran Hutang
+                                            Pembayaran Cicilan
                                           </span>
                                         )}
                                       </div>
