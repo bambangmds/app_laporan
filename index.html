@@ -56,19 +56,6 @@
         }
       })();
     </script>
-    <script>
-      // Capture PWA install prompt as early as possible before any framework loads
-      window.__pwaDeferredPrompt = null;
-      window.addEventListener('beforeinstallprompt', function(e) {
-        e.preventDefault();
-        window.__pwaDeferredPrompt = e;
-        window.dispatchEvent(new CustomEvent('pwa-prompt-available'));
-      });
-      window.addEventListener('appinstalled', function() {
-        window.__pwaDeferredPrompt = null;
-        window.dispatchEvent(new CustomEvent('pwa-installed-success'));
-      });
-    </script>
     <meta name="description" content="Dilengkapi pencarian biaya per kategori dan per nonta/bon: di 3 sub menu Biaya Per Proyek" />
     <meta name="theme-color" content="#2563eb" />
     <meta name="mobile-web-app-capable" content="yes" />

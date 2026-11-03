@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo, Fragment } from 'react';
 import { JPU_LOGO_SVG_BASE64 } from './assets/logoData';
-import { PWAInstallButton } from './components/PWAInstallButton';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import {
   Search,
@@ -3024,17 +3023,12 @@ export default function App(): any {
             )}
 
             {/* Frame paling bawah warna dasar abu-abu terang dengan font PT. JAKARTA PRIMA UTAMA */}
-            <div className="mt-6 bg-slate-700 border border-slate-500/80 rounded-2xl p-4 text-center shadow-md space-y-3">
-              <div className="flex justify-center">
-                <PWAInstallButton />
+            <div className="mt-6 bg-slate-700 border border-slate-500/80 rounded-2xl p-4 text-center shadow-md">
+              <div className="text-sm sm:text-base font-black text-white tracking-wider uppercase">
+                PT. JAKARTA PRIMA UTAMA
               </div>
-              <div>
-                <div className="text-sm sm:text-base font-black text-white tracking-wider uppercase">
-                  PT. JAKARTA PRIMA UTAMA
-                </div>
-                <div className="text-[9px] text-slate-200 font-semibold tracking-widest uppercase mt-1">
-                  General Contractor &amp; Service
-                </div>
+              <div className="text-[9px] text-slate-200 font-semibold tracking-widest uppercase mt-1">
+                General Contractor &amp; Service
               </div>
             </div>
           </div>
@@ -3467,8 +3461,6 @@ export default function App(): any {
                   <RefreshCw className={`w-3.5 h-3.5 text-slate-600 ${loading ? 'animate-spin' : ''}`} />
                   <span>Segarkan Data</span>
                 </button>
-
-                <PWAInstallButton />
 
                 <button
                   onClick={handleLogout}
