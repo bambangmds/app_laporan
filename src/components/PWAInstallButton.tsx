@@ -1,152 +1,251 @@
 import React, { useState } from 'react';
 import { usePWAInstall } from '../usePWAInstall';
-import { Download, Smartphone, X, CheckCircle2 } from 'lucide-react';
+import { Download, Smartphone, X, CheckCircle2, ExternalLink, RefreshCw, Sparkles, Monitor } from 'lucide-react';
 
 export const PWAInstallButton: React.FC<{ className?: string }> = ({ className = '' }) => {
-  const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
+  const { isInstallable, isInstalled, isIOS, isInIframe, install } = usePWAInstall();
+  const [isInstalling, setIsInstalling] = useState(false);
   const [showIOSGuide, setShowIOSGuide] = useState(false);
+  const [showIframeNotice, setShowIframeNotice] = useState(false);
   const [showManualGuide, setShowManualGuide] = useState(false);
+  const [installSuccessToast, setInstallSuccessToast] = useState(false);
 
-  // If already running as an installed PWA in standalone mode
+  // If already running as an installed standalone PWA
   if (isInstalled) {
     return (
-      <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-medium border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/50 ${className}`}>
-        <CheckCircle2 className="w-3.5 h-3.5" />
+      <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/40 text-emerald-300 border border-emerald-800/60 text-xs font-semibold shadow-xs ${className}`}>
+        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
         Aplikasi Terinstall (PWA)
       </span>
     );
   }
 
-  // Chromium / Android / Desktop flow with automatic beforeinstallprompt
-  if (isInstallable) {
-    return (
-      <button
-        onClick={install}
-        type="button"
-        className={`inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white px-3.5 py-1.5 text-xs font-semibold shadow-md hover:shadow-lg transition-all active:scale-95 ${className}`}
-        title="Install Aplikasi PWA ke HP / Laptop Anda"
-      >
-        <Download className="w-4 h-4 animate-bounce" />
-        Install Aplikasi
-      </button>
-    );
-  }
+  // Handle click on the install button
+  const handleInstallClick = async () => {
+    setIsInstalling(true);
 
-  // iOS Safari flow
-  if (isIOS) {
-    return (
-      <>
-        <button
-          onClick={() => setShowIOSGuide(true)}
-          type="button"
-          className={`inline-flex items-center gap-2 rounded-lg bg-slate-800 hover:bg-slate-900 text-white px-3.5 py-1.5 text-xs font-semibold shadow-md transition-all active:scale-95 ${className}`}
-        >
-          <Smartphone className="w-4 h-4 text-rose-400" />
-          Install di iOS
-        </button>
+    // 1. If deferred prompt is ready, trigger native browser install prompt to the device immediately!
+    if (isInstallable) {
+      try {
+        const result = await install();
+        setIsInstalling(false);
+        if (result.success) {
+          setInstallSuccessToast(true);
+          setTimeout(() => setInstallSuccessToast(false), 5000);
+          return;
+        }
+        if (result.reason === 'dismissed') {
+          // User closed browser dialog, do nothing
+          return;
+        }
+      } catch (err) {
+        console.warn('[PWA] Error running install:', err);
+        setIsInstalling(false);
+      }
+    }
+    setIsInstalling(false);
 
-        {showIOSGuide && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-            <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl border border-slate-100 dark:bg-slate-900 dark:border-slate-800">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-2 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400">
-                    <Smartphone className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-slate-900 dark:text-white">Install di iPhone / iPad</h3>
-                    <p className="text-xs text-slate-500">Petunjuk instalasi iOS Safari</p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setShowIOSGuide(false)}
-                  className="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
+    // 2. If running inside an iframe (e.g. AI Studio preview), browser blocks installation in iframes
+    if (isInIframe) {
+      setShowIframeNotice(true);
+      return;
+    }
 
-              <div className="mt-4 space-y-3 text-xs text-slate-600 dark:text-slate-300">
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-600 text-white font-bold text-xs">1</span>
-                  <p className="pt-0.5">Buka web ini menggunakan browser <strong>Safari</strong>.</p>
-                </div>
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-600 text-white font-bold text-xs">2</span>
-                  <p className="pt-0.5">Tekan tombol <strong>Bagikan (Share)</strong> pada toolbar Safari (ikon kotak dengan panah ke atas).</p>
-                </div>
-                <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-600 text-white font-bold text-xs">3</span>
-                  <p className="pt-0.5">Gulir ke bawah dan pilih <strong>"Tambah ke Utama" (Add to Home Screen)</strong>.</p>
-                </div>
-              </div>
+    // 3. If iOS Safari device
+    if (isIOS) {
+      setShowIOSGuide(true);
+      return;
+    }
 
-              <button
-                onClick={() => setShowIOSGuide(false)}
-                className="mt-5 w-full rounded-xl bg-rose-600 py-2.5 text-xs font-semibold text-white hover:bg-rose-700 transition"
-              >
-                Saya Mengerti
-              </button>
-            </div>
-          </div>
-        )}
-      </>
-    );
-  }
+    // 4. Fallback for desktop Chrome/Edge or Android when prompt is ambient or in address bar
+    setShowManualGuide(true);
+  };
 
-  // Fallback for Desktop Chrome/Edge or Mobile Android when prompt is ambient or ready
   return (
     <>
+      {/* Main Install Button */}
       <button
-        onClick={() => setShowManualGuide(true)}
+        onClick={handleInstallClick}
+        disabled={isInstalling}
         type="button"
-        className={`inline-flex items-center gap-2 rounded-lg bg-slate-800 hover:bg-slate-900 text-white px-3.5 py-1.5 text-xs font-semibold shadow-md transition-all active:scale-95 ${className}`}
+        className={`inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:via-rose-500 hover:to-red-600 active:scale-95 text-white px-3.5 py-1.5 text-xs font-bold shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-75 ${className}`}
+        title="Klik untuk menginstall aplikasi ini langsung ke HP atau Laptop Anda"
       >
-        <Download className="w-4 h-4 text-rose-400" />
-        Install Aplikasi PWA
+        {isInstalling ? (
+          <RefreshCw className="w-4 h-4 animate-spin text-white" />
+        ) : (
+          <Download className="w-4 h-4 animate-bounce text-white" />
+        )}
+        <span>{isInstalling ? 'Membuka Instalasi...' : 'Install Aplikasi PWA'}</span>
       </button>
 
-      {showManualGuide && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl border border-slate-100 dark:bg-slate-900 dark:border-slate-800">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+      {/* Success Toast */}
+      {installSuccessToast && (
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-xl bg-emerald-950 text-emerald-200 border border-emerald-800 shadow-2xl text-xs font-semibold animate-in fade-in slide-in-from-bottom-2">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+          <span>Aplikasi Laporan Penjualan JPU berhasil diinstall di perangkat Anda!</span>
+        </div>
+      )}
+
+      {/* MODAL 1: Iframe Environment Notice (Direct top tab opener) */}
+      {showIframeNotice && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-xs p-4 animate-fadeIn">
+          <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 p-6 shadow-2xl text-white">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-rose-50 text-rose-600 dark:bg-rose-950/50 dark:text-rose-400">
-                  <Download className="w-5 h-5" />
+                <div className="p-2 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                  <Monitor className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">Install PWA Penjualan JPU</h3>
-                  <p className="text-xs text-slate-500">Dapat diakses seperti aplikasi native</p>
+                  <h3 className="text-base font-bold text-white">Instalasi ke Perangkat Anda</h3>
+                  <p className="text-xs text-slate-400">Keamanan browser melarang install dari dalam iframe</p>
                 </div>
               </div>
               <button
-                onClick={() => setShowManualGuide(false)}
-                className="p-1 rounded-lg text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-600"
+                onClick={() => setShowIframeNotice(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="mt-4 space-y-3 text-xs text-slate-600 dark:text-slate-300">
-              <p className="p-3 rounded-xl bg-rose-50 text-rose-900 dark:bg-rose-950/40 dark:text-rose-200">
-                Aplikasi ini mendukung teknologi <strong>Progressive Web App (PWA)</strong> dengan offline caching dan performa tinggi.
+            <div className="mt-4 space-y-3 text-xs text-slate-300">
+              <p className="p-3 rounded-xl bg-slate-800/80 border border-slate-700 leading-relaxed">
+                Browser (Chrome, Edge, Safari) mewajibkan instalasi aplikasi PWA dijalankan dari <strong>halaman tab browser utama</strong> agar ikon aplikasi dapat ditambahkan ke Layar Utama HP / Desktop Komputer Anda.
               </p>
-              <div className="space-y-2 pt-1">
-                <p className="font-semibold text-slate-800 dark:text-slate-200">Cara Install di Chrome / Edge / Android:</p>
-                <ol className="list-decimal list-inside space-y-1.5 pl-1">
-                  <li>Klik titik tiga (<strong>⋮</strong> atau <strong>...</strong>) di pojok kanan atas browser.</li>
-                  <li>Pilih menu <strong>"Simpan & bagikan" &gt; "Install Laporan Penjualan JPU"</strong> atau <strong>"Tambahkan ke Layar Utama"</strong>.</li>
-                  <li>Konfirmasi tombol <strong>Install</strong>.</li>
+
+              <div className="p-3 rounded-xl bg-rose-950/30 border border-rose-900/50 space-y-2">
+                <div className="font-semibold text-rose-300 flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <span>Langkah Cepat &amp; Mudah:</span>
+                </div>
+                <ol className="list-decimal list-inside space-y-1 text-slate-300 pl-1 leading-relaxed">
+                  <li>Klik tombol <strong>"Buka di Tab Baru &amp; Install"</strong> di bawah.</li>
+                  <li>Di tab baru yang terbuka, klik tombol <strong>"Install Aplikasi PWA"</strong> atau ikon <strong>Install (+)</strong> di bilah browser.</li>
+                  <li>Aplikasi langsung terpasang sebagai program mandiri di perangkat Anda!</li>
                 </ol>
               </div>
             </div>
 
+            <div className="mt-5 flex gap-2.5">
+              <a
+                href={typeof window !== 'undefined' ? window.location.href : '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setShowIframeNotice(false)}
+                className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white py-2.5 px-4 text-xs font-bold shadow-lg hover:shadow-rose-600/30 transition text-center"
+              >
+                <ExternalLink className="w-4 h-4" />
+                <span>Buka di Tab Baru &amp; Install</span>
+              </a>
+              <button
+                onClick={() => setShowIframeNotice(false)}
+                className="rounded-xl bg-slate-800 px-4 py-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-700 transition"
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 2: iOS Safari Guide */}
+      {showIOSGuide && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-xs p-4 animate-fadeIn">
+          <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 p-6 shadow-2xl text-white">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                  <Smartphone className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">Install di iPhone / iPad (iOS)</h3>
+                  <p className="text-xs text-slate-400">Petunjuk instalasi browser Safari</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowIOSGuide(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="mt-4 space-y-3 text-xs text-slate-300">
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-800/70 border border-slate-700">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-600 text-white font-bold text-xs">1</span>
+                <p className="pt-0.5 leading-relaxed">Buka tautan aplikasi ini menggunakan browser bawaan <strong>Safari</strong>.</p>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-800/70 border border-slate-700">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-600 text-white font-bold text-xs">2</span>
+                <p className="pt-0.5 leading-relaxed">Tekan tombol <strong>Bagikan / Share</strong> (ikon kotak dengan panah ke atas) di bagian bawah atau atas Safari.</p>
+              </div>
+              <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-800/70 border border-slate-700">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-rose-600 text-white font-bold text-xs">3</span>
+                <p className="pt-0.5 leading-relaxed">Gulir ke bawah dan pilih <strong>"Tambah ke Layar Utama" (Add to Home Screen)</strong> lalu tekan <strong>Tambah (Add)</strong>.</p>
+              </div>
+            </div>
+
             <button
-              onClick={() => setShowManualGuide(false)}
-              className="mt-5 w-full rounded-xl bg-slate-900 py-2.5 text-xs font-semibold text-white hover:bg-slate-800 transition"
+              onClick={() => setShowIOSGuide(false)}
+              className="mt-5 w-full rounded-xl bg-gradient-to-r from-red-600 to-rose-600 py-2.5 text-xs font-bold text-white hover:from-red-500 hover:to-rose-500 transition shadow-md"
             >
-              Tutup
+              Saya Mengerti
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 3: Chrome / Edge Desktop & Android Omnibox Guide */}
+      {showManualGuide && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-xs p-4 animate-fadeIn">
+          <div className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-800 p-6 shadow-2xl text-white">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                  <Download className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-white">Install Laporan Penjualan JPU</h3>
+                  <p className="text-xs text-slate-400">Instalasi aplikasi ke desktop / HP Anda</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowManualGuide(false)}
+                className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="mt-4 space-y-3 text-xs text-slate-300">
+              <div className="p-3 rounded-xl bg-slate-800/70 border border-slate-700 space-y-2">
+                <p className="font-semibold text-rose-300">Jika prompt browser tidak langsung muncul otomatis:</p>
+                <ol className="list-decimal list-inside space-y-1.5 pl-1 leading-relaxed">
+                  <li>Lihat di <strong>bilah alamat URL browser (kanan atas)</strong>, klik ikon <strong>Install (+)</strong> atau ikon komputer unduh.</li>
+                  <li>Atau klik menu browser (titik tiga <strong>⋮</strong>) &gt; pilih <strong>"Install Laporan Penjualan JPU"</strong> atau <strong>"Tambahkan ke Layar Utama"</strong>.</li>
+                  <li>Klik <strong>Install</strong> pada jendela konfirmasi.</li>
+                </ol>
+              </div>
+            </div>
+
+            <div className="mt-5 flex gap-2.5">
+              <button
+                onClick={async () => {
+                  setShowManualGuide(false);
+                  await handleInstallClick();
+                }}
+                className="flex-1 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 py-2.5 text-xs font-bold text-white hover:from-red-500 hover:to-rose-500 transition shadow-md"
+              >
+                Coba Pasang Otomatis Lagi
+              </button>
+              <button
+                onClick={() => setShowManualGuide(false)}
+                className="rounded-xl bg-slate-800 px-4 py-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-700 transition"
+              >
+                Tutup
+              </button>
+            </div>
           </div>
         </div>
       )}
