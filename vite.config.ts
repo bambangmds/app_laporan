@@ -41,6 +41,22 @@ export default defineConfig(() => {
               type: 'image/png',
               purpose: 'maskable'
             }
+          ],
+          shortcuts: [
+            {
+              name: 'Perhitungan RAP',
+              short_name: 'RAP',
+              description: 'Buka Laporan Perhitungan RAP',
+              url: '/',
+              icons: [{ src: '/pwa-192x192.png', sizes: '192x192' }]
+            },
+            {
+              name: 'Perhitungan Overhead',
+              short_name: 'Overhead',
+              description: 'Buka Laporan Perhitungan Overhead',
+              url: '/',
+              icons: [{ src: '/pwa-192x192.png', sizes: '192x192' }]
+            }
           ]
         },
         workbox: {

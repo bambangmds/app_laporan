@@ -220,12 +220,20 @@ export const PWAInstallButton: React.FC<{ className?: string }> = ({ className =
 
             <div className="mt-4 space-y-3 text-xs text-slate-300">
               <div className="p-3 rounded-xl bg-slate-800/70 border border-slate-700 space-y-2">
-                <p className="font-semibold text-rose-300">Jika prompt browser tidak langsung muncul otomatis:</p>
+                <p className="font-semibold text-rose-300">Cara Install &amp; Buat Shortcut di Laptop (Windows / Mac):</p>
                 <ol className="list-decimal list-inside space-y-1.5 pl-1 leading-relaxed">
-                  <li>Lihat di <strong>bilah alamat URL browser (kanan atas)</strong>, klik ikon <strong>Install (+)</strong> atau ikon komputer unduh.</li>
-                  <li>Atau klik menu browser (titik tiga <strong>⋮</strong>) &gt; pilih <strong>"Install Laporan Penjualan JPU"</strong> atau <strong>"Tambahkan ke Layar Utama"</strong>.</li>
-                  <li>Klik <strong>Install</strong> pada jendela konfirmasi.</li>
+                  <li>Lihat di <strong>bilah alamat URL browser (kanan atas)</strong>, klik ikon <strong>Install (+)</strong> atau ikon monitor unduh.</li>
+                  <li>Atau klik menu browser (titik tiga <strong>⋮</strong>) &gt; pilih <strong>"Simpan dan bagikan"</strong> &gt; <strong>"Install Laporan Penjualan JPU"</strong>.</li>
+                  <li>Klik <strong>Install</strong> pada jendela konfirmasi yang muncul.</li>
                 </ol>
+              </div>
+
+              <div className="p-3 rounded-xl bg-amber-950/30 border border-amber-900/50 space-y-2">
+                <p className="font-semibold text-amber-300">Cara Memunculkan Shortcut di Desktop Layar Laptop:</p>
+                <div className="space-y-1 text-slate-300 leading-relaxed">
+                  <p><strong>Metode 1:</strong> Di Chrome, klik menu titik tiga <strong>⋮</strong> &gt; pilih <strong>"Simpan dan bagikan" (Save and share)</strong> &gt; pilih <strong>"Buat pintasan..." (Create shortcut...)</strong> &gt; centang <strong>"Buka sebagai jendela" (Open as window)</strong> &gt; klik <strong>Buat</strong>. Ikon shortcut langsung muncul di Desktop Laptop Anda.</p>
+                  <p className="pt-1"><strong>Metode 2:</strong> Buka tab baru di browser dan ketik <code className="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300 font-mono">chrome://apps</code> &gt; klik kanan pada <strong>"Laporan Penjualan JPU"</strong> &gt; pilih <strong>"Buat pintasan..."</strong> &gt; centang <strong>"Desktop"</strong> &amp; <strong>"Menu Mulai"</strong>.</p>
+                </div>
               </div>
             </div>
 
