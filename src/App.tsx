@@ -77,6 +77,12 @@ interface DBStatus {
 interface UserJPU {
   User_ID: string;
   User_Name: string;
+  Menu01?: string;
+  Menu02?: string;
+  Menu03?: string;
+  Menu04?: string;
+  Menu05?: string;
+  Menu06?: string;
 }
 
 export default function App(): any {
@@ -90,7 +96,14 @@ export default function App(): any {
   const [loginErrorMsg, setLoginErrorMsg] = useState<string | null>(null);
   const [isSubmittingLogin, setIsSubmittingLogin] = useState<boolean>(false);
 
-  const [loggedInUser, setLoggedInUser] = useState<UserJPU | null>(null);
+  const [loggedInUser, setLoggedInUser] = useState<UserJPU | null>(() => {
+    try {
+      const saved = localStorage.getItem('jpu_logged_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
 
   const isLoggedIn = !!loggedInUser;
 
@@ -228,6 +241,41 @@ export default function App(): any {
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [activeView, setActiveView] = useState<'rap' | 'overhead' | 'customer' | 'proyek_selesai' | 'proyek_pengerjaan' | 'proyek_pengerjaan_all' | 'proyek_semua' | 'manager' | 'seorangan'>('rap');
   const [projectSearchQuery, setProjectSearchQuery] = useState<string>('');
+
+  // User menu permission checks (Menu01 - Menu05 from Database SDM.User_JPU)
+  const isMenu01On = String(loggedInUser?.Menu01 ?? '1').trim() === '1';
+  const isMenu02On = String(loggedInUser?.Menu02 ?? '1').trim() === '1';
+  const isMenu03On = String(loggedInUser?.Menu03 ?? '1').trim() === '1';
+  const isMenu04On = String(loggedInUser?.Menu04 ?? '1').trim() === '1';
+  const isMenu05On = String(loggedInUser?.Menu05 ?? '1').trim() === '1';
+
+  // Auto-switch to first available enabled menu if current view is disabled
+  useEffect(() => {
+    if (!loggedInUser) return;
+    const is01 = String(loggedInUser.Menu01 ?? '1').trim() === '1';
+    const is02 = String(loggedInUser.Menu02 ?? '1').trim() === '1';
+    const is03 = String(loggedInUser.Menu03 ?? '1').trim() === '1';
+    const is04 = String(loggedInUser.Menu04 ?? '1').trim() === '1';
+    const is05 = String(loggedInUser.Menu05 ?? '1').trim() === '1';
+
+    const isCurrentActiveAllowed = 
+      (activeView === 'rap' && is01) ||
+      (activeView === 'overhead' && is02) ||
+      (activeView === 'customer' && is03) ||
+      ((activeView === 'proyek_selesai' || activeView === 'proyek_pengerjaan' || activeView === 'proyek_semua') && is04) ||
+      (activeView === 'proyek_pengerjaan_all' && is05);
+
+    if (!isCurrentActiveAllowed) {
+      if (is01) setActiveView('rap');
+      else if (is02) setActiveView('overhead');
+      else if (is03) setActiveView('customer');
+      else if (is04) {
+        setActiveView('proyek_selesai');
+        setIsProyekMenuOpen(true);
+      }
+      else if (is05) setActiveView('proyek_pengerjaan_all');
+    }
+  }, [loggedInUser, activeView]);
 
   // RAP Calculation States
   const [rapReportData, setRapReportData] = useState<any[]>([]);
@@ -3147,53 +3195,122 @@ export default function App(): any {
             
             {/* 1. Perhitungan RAP (Hijau Emerald) */}
             <button 
-              onClick={() => { setActiveView('rap'); }}
-              className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm transition-all cursor-pointer ${
-                activeView === 'rap' 
-                  ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-green-500 text-slate-950 font-black border-l-4 border-emerald-100 pl-3.5 shadow-[0_0_22px_rgba(16,185,129,0.7)] ring-1 ring-emerald-300/80 scale-[1.01]' 
-                  : 'bg-slate-800/60 hover:bg-emerald-950/60 text-slate-100 hover:text-white border-l-4 border-emerald-500/40 hover:border-emerald-400 pl-3 font-semibold shadow-sm hover:shadow-md hover:shadow-emerald-500/20'
+              type="button"
+              disabled={!isMenu01On}
+              onClick={() => { 
+                if (isMenu01On) {
+                  setActiveView('rap');
+                }
+              }}
+              className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm transition-all ${
+                !isMenu01On
+                  ? 'bg-slate-900/40 text-slate-500 border-l-4 border-slate-700/60 opacity-50 cursor-not-allowed shadow-none select-none'
+                  : activeView === 'rap' 
+                    ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-green-500 text-slate-950 font-black border-l-4 border-emerald-100 pl-3.5 shadow-[0_0_22px_rgba(16,185,129,0.7)] ring-1 ring-emerald-300/80 scale-[1.01] cursor-pointer' 
+                    : 'bg-slate-800/60 hover:bg-emerald-950/60 text-slate-100 hover:text-white border-l-4 border-emerald-500/40 hover:border-emerald-400 pl-3 font-semibold shadow-sm hover:shadow-md hover:shadow-emerald-500/20 cursor-pointer'
               }`}
+              title={!isMenu01On ? 'Menu dinonaktifkan (Menu01=0)' : 'Perhitungan RAP'}
             >
-              <div className={`p-1.5 rounded-lg transition-colors ${activeView === 'rap' ? 'bg-slate-950/30 text-slate-950' : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'}`}>
-                <PieChart className="w-4 h-4 shrink-0" />
+              <div className="flex items-center gap-3 min-w-0">
+                <div className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+                  !isMenu01On
+                    ? 'bg-slate-800 text-slate-600 border border-slate-700/50'
+                    : activeView === 'rap' 
+                      ? 'bg-slate-950/30 text-slate-950' 
+                      : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                }`}>
+                  <PieChart className="w-4 h-4 shrink-0" />
+                </div>
+                <span className="tracking-tight truncate">Perhitungan RAP</span>
               </div>
-              <span className="tracking-tight">Perhitungan RAP</span>
+              {!isMenu01On && (
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-950 text-slate-500 border border-slate-800 flex items-center gap-1 shrink-0">
+                  <Lock className="w-2.5 h-2.5" /> Off
+                </span>
+              )}
             </button>
 
             {/* 2. Perhitungan Overhead (Ungu Fuchsia / Magenta) */}
             <button 
-              onClick={() => { setActiveView('overhead'); }}
-              className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm transition-all cursor-pointer ${
-                activeView === 'overhead' 
-                  ? 'bg-gradient-to-r from-fuchsia-600 via-purple-600 to-pink-500 text-white font-extrabold border-l-4 border-fuchsia-200 pl-3.5 shadow-[0_0_22px_rgba(217,70,239,0.7)] ring-1 ring-fuchsia-300/80 scale-[1.01]' 
-                  : 'bg-slate-800/60 hover:bg-fuchsia-950/60 text-slate-100 hover:text-white border-l-4 border-fuchsia-500/40 hover:border-fuchsia-400 pl-3 font-semibold shadow-sm hover:shadow-md hover:shadow-fuchsia-500/20'
+              type="button"
+              disabled={!isMenu02On}
+              onClick={() => { 
+                if (isMenu02On) {
+                  setActiveView('overhead');
+                }
+              }}
+              className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm transition-all ${
+                !isMenu02On
+                  ? 'bg-slate-900/40 text-slate-500 border-l-4 border-slate-700/60 opacity-50 cursor-not-allowed shadow-none select-none'
+                  : activeView === 'overhead' 
+                    ? 'bg-gradient-to-r from-fuchsia-600 via-purple-600 to-pink-500 text-white font-extrabold border-l-4 border-fuchsia-200 pl-3.5 shadow-[0_0_22px_rgba(217,70,239,0.7)] ring-1 ring-fuchsia-300/80 scale-[1.01] cursor-pointer' 
+                    : 'bg-slate-800/60 hover:bg-fuchsia-950/60 text-slate-100 hover:text-white border-l-4 border-fuchsia-500/40 hover:border-fuchsia-400 pl-3 font-semibold shadow-sm hover:shadow-md hover:shadow-fuchsia-500/20 cursor-pointer'
               }`}
+              title={!isMenu02On ? 'Menu dinonaktifkan (Menu02=0)' : 'Perhitungan Overhead'}
             >
-              <div className={`p-1.5 rounded-lg transition-colors ${activeView === 'overhead' ? 'bg-white/20 text-white' : 'bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/40'}`}>
-                <Calculator className="w-4 h-4 shrink-0" />
+              <div className="flex items-center gap-3 min-w-0">
+                <div className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+                  !isMenu02On
+                    ? 'bg-slate-800 text-slate-600 border border-slate-700/50'
+                    : activeView === 'overhead' 
+                      ? 'bg-white/20 text-white' 
+                      : 'bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/40'
+                }`}>
+                  <Calculator className="w-4 h-4 shrink-0" />
+                </div>
+                <span className="tracking-tight truncate">Perhitungan Overhead</span>
               </div>
-              <span className="tracking-tight">Perhitungan Overhead</span>
+              {!isMenu02On && (
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-950 text-slate-500 border border-slate-800 flex items-center gap-1 shrink-0">
+                  <Lock className="w-2.5 h-2.5" /> Off
+                </span>
+              )}
             </button>
 
             {/* 3. Penjualan Per Customer (Merah Rose / Crimson) */}
             <button 
-              onClick={() => { setActiveView('customer'); }}
-              className={`w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm transition-all cursor-pointer ${
-                activeView === 'customer' 
-                  ? 'bg-gradient-to-r from-rose-600 via-pink-600 to-red-500 text-white font-extrabold border-l-4 border-rose-200 pl-3.5 shadow-[0_0_22px_rgba(225,29,72,0.7)] ring-1 ring-rose-300/80 scale-[1.01]' 
-                  : 'bg-slate-800/60 hover:bg-rose-950/60 text-slate-100 hover:text-white border-l-4 border-rose-500/40 hover:border-rose-400 pl-3 font-semibold shadow-sm hover:shadow-md hover:shadow-rose-500/20'
+              type="button"
+              disabled={!isMenu03On}
+              onClick={() => { 
+                if (isMenu03On) {
+                  setActiveView('customer');
+                }
+              }}
+              className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm transition-all ${
+                !isMenu03On
+                  ? 'bg-slate-900/40 text-slate-500 border-l-4 border-slate-700/60 opacity-50 cursor-not-allowed shadow-none select-none'
+                  : activeView === 'customer' 
+                    ? 'bg-gradient-to-r from-rose-600 via-pink-600 to-red-500 text-white font-extrabold border-l-4 border-rose-200 pl-3.5 shadow-[0_0_22px_rgba(225,29,72,0.7)] ring-1 ring-rose-300/80 scale-[1.01] cursor-pointer' 
+                    : 'bg-slate-800/60 hover:bg-rose-950/60 text-slate-100 hover:text-white border-l-4 border-rose-500/40 hover:border-rose-400 pl-3 font-semibold shadow-sm hover:shadow-md hover:shadow-rose-500/20 cursor-pointer'
               }`}
+              title={!isMenu03On ? 'Menu dinonaktifkan (Menu03=0)' : 'Penjualan Per Customer'}
             >
-              <div className={`p-1.5 rounded-lg transition-colors ${activeView === 'customer' ? 'bg-white/20 text-white' : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'}`}>
-                <Users className="w-4 h-4 shrink-0" />
+              <div className="flex items-center gap-3 min-w-0">
+                <div className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+                  !isMenu03On
+                    ? 'bg-slate-800 text-slate-600 border border-slate-700/50'
+                    : activeView === 'customer' 
+                      ? 'bg-white/20 text-white' 
+                      : 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                }`}>
+                  <Users className="w-4 h-4 shrink-0" />
+                </div>
+                <span className="tracking-tight truncate">Penjualan Per Customer</span>
               </div>
-              <span className="tracking-tight">Penjualan Per Customer</span>
+              {!isMenu03On && (
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-950 text-slate-500 border border-slate-800 flex items-center gap-1 shrink-0">
+                  <Lock className="w-2.5 h-2.5" /> Off
+                </span>
+              )}
             </button>
 
             {/* 4. Penjualan Per Proyek (Biru Royal / Indigo - Dropdown Main Menu) */}
             <div className="space-y-1.5">
               <button 
+                type="button"
+                disabled={!isMenu04On}
                 onClick={() => { 
+                  if (!isMenu04On) return;
                   if (activeView !== 'proyek_selesai' && activeView !== 'proyek_pengerjaan' && activeView !== 'proyek_semua') {
                     setActiveView('proyek_selesai');
                     setIsProyekMenuOpen(true);
@@ -3201,27 +3318,45 @@ export default function App(): any {
                     setIsProyekMenuOpen(!isProyekMenuOpen);
                   }
                 }}
-                className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm transition-all cursor-pointer ${
-                  activeView === 'proyek_selesai' || activeView === 'proyek_pengerjaan' || activeView === 'proyek_semua'
-                    ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white font-extrabold border-l-4 border-blue-200 pl-3.5 shadow-[0_0_22px_rgba(37,99,235,0.7)] ring-1 ring-blue-300/80 scale-[1.01]'
-                    : 'bg-slate-800/60 hover:bg-blue-950/60 text-slate-100 hover:text-white border-l-4 border-blue-500/40 hover:border-blue-400 pl-3 font-semibold shadow-sm hover:shadow-md hover:shadow-blue-500/20'
+                className={`w-full flex items-center justify-between px-3.5 py-3 rounded-xl text-sm transition-all ${
+                  !isMenu04On
+                    ? 'bg-slate-900/40 text-slate-500 border-l-4 border-slate-700/60 opacity-50 cursor-not-allowed shadow-none select-none'
+                    : (activeView === 'proyek_selesai' || activeView === 'proyek_pengerjaan' || activeView === 'proyek_semua')
+                      ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white font-extrabold border-l-4 border-blue-200 pl-3.5 shadow-[0_0_22px_rgba(37,99,235,0.7)] ring-1 ring-blue-300/80 scale-[1.01] cursor-pointer'
+                      : 'bg-slate-800/60 hover:bg-blue-950/60 text-slate-100 hover:text-white border-l-4 border-blue-500/40 hover:border-blue-400 pl-3 font-semibold shadow-sm hover:shadow-md hover:shadow-blue-500/20 cursor-pointer'
                 }`}
+                title={!isMenu04On ? 'Menu dinonaktifkan (Menu04=0)' : 'Penjualan Per Proyek'}
               >
-                <div className="flex items-center gap-3">
-                  <div className={`p-1.5 rounded-lg transition-colors ${activeView === 'proyek_selesai' || activeView === 'proyek_pengerjaan' || activeView === 'proyek_semua' ? 'bg-white/20 text-white' : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'}`}>
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+                    !isMenu04On
+                      ? 'bg-slate-800 text-slate-600 border border-slate-700/50'
+                      : (activeView === 'proyek_selesai' || activeView === 'proyek_pengerjaan' || activeView === 'proyek_semua') 
+                        ? 'bg-white/20 text-white' 
+                        : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
+                  }`}>
                     <Briefcase className="w-4 h-4 shrink-0" />
                   </div>
-                  <span className="tracking-tight">Penjualan Per Proyek</span>
+                  <span className="tracking-tight truncate">Penjualan Per Proyek</span>
                 </div>
-                <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isProyekMenuOpen ? 'rotate-180 text-white' : 'text-slate-300'}`} />
+                <div className="flex items-center gap-1.5 shrink-0">
+                  {!isMenu04On ? (
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-950 text-slate-500 border border-slate-800 flex items-center gap-1">
+                      <Lock className="w-2.5 h-2.5" /> Off
+                    </span>
+                  ) : (
+                    <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isProyekMenuOpen ? 'rotate-180 text-white' : 'text-slate-300'}`} />
+                  )}
+                </div>
               </button>
 
-              {/* Collapsible Submenus dengan Warna Terang & Kontras */}
-              {isProyekMenuOpen && (
+              {/* Collapsible Submenus dengan Warna Terang & Kontras - Hanya jika Menu04 On */}
+              {isMenu04On && isProyekMenuOpen && (
                 <div className="pl-3 space-y-2 pt-1.5 animate-fadeIn">
                   
                   {/* Submenu 1: Proyek Selesai (100%) - Hijau Teal */}
                   <button
+                    type="button"
                     onClick={() => { setActiveView('proyek_selesai'); }}
                     className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between gap-2 cursor-pointer ${
                       activeView === 'proyek_selesai' 
@@ -3247,6 +3382,7 @@ export default function App(): any {
 
                   {/* Submenu 2: Proyek Belum Selesai - Kuning Amber */}
                   <button
+                    type="button"
                     onClick={() => { setActiveView('proyek_pengerjaan'); }}
                     className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between gap-2 cursor-pointer ${
                       activeView === 'proyek_pengerjaan' 
@@ -3272,6 +3408,7 @@ export default function App(): any {
 
                   {/* Submenu 3: Proyek Selesai & Belum Selesai - Biru Sky / Cyan */}
                   <button
+                    type="button"
                     onClick={() => { setActiveView('proyek_semua'); }}
                     className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between gap-2 cursor-pointer ${
                       activeView === 'proyek_semua' 
@@ -3301,26 +3438,50 @@ export default function App(): any {
 
             {/* 5. Proyek Dalam Pengerjaan (Oranye Jingga Warm / Amber Flame) */}
             <button 
+              type="button"
+              disabled={!isMenu05On}
               onClick={() => { 
-                setActiveView('proyek_pengerjaan_all'); 
+                if (isMenu05On) {
+                  setActiveView('proyek_pengerjaan_all'); 
+                }
               }}
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm transition-all cursor-pointer ${
-                activeView === 'proyek_pengerjaan_all' 
-                  ? 'bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 text-slate-950 font-black border-l-4 border-orange-100 pl-3.5 shadow-[0_0_22px_rgba(249,115,22,0.7)] ring-1 ring-orange-200/80 scale-[1.01]' 
-                  : 'bg-slate-800/60 hover:bg-orange-950/60 text-slate-100 hover:text-white border-l-4 border-orange-500/40 hover:border-orange-400 pl-3 font-semibold shadow-sm hover:shadow-md hover:shadow-orange-500/20'
+              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm transition-all ${
+                !isMenu05On
+                  ? 'bg-slate-900/40 text-slate-500 border-l-4 border-slate-700/60 opacity-50 cursor-not-allowed shadow-none select-none'
+                  : activeView === 'proyek_pengerjaan_all' 
+                    ? 'bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 text-slate-950 font-black border-l-4 border-orange-100 pl-3.5 shadow-[0_0_22px_rgba(249,115,22,0.7)] ring-1 ring-orange-200/80 scale-[1.01] cursor-pointer' 
+                    : 'bg-slate-800/60 hover:bg-orange-950/60 text-slate-100 hover:text-white border-l-4 border-orange-500/40 hover:border-orange-400 pl-3 font-semibold shadow-sm hover:shadow-md hover:shadow-orange-500/20 cursor-pointer'
               }`}
+              title={!isMenu05On ? 'Menu dinonaktifkan (Menu05=0)' : 'Proyek Dalam Pengerjaan'}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <div className={`p-1.5 rounded-lg transition-colors shrink-0 ${activeView === 'proyek_pengerjaan_all' ? 'bg-slate-950/30 text-slate-950' : 'bg-orange-500/20 text-orange-300 border border-orange-500/40'}`}>
+                <div className={`p-1.5 rounded-lg transition-colors shrink-0 ${
+                  !isMenu05On
+                    ? 'bg-slate-800 text-slate-600 border border-slate-700/50'
+                    : activeView === 'proyek_pengerjaan_all' 
+                      ? 'bg-slate-950/30 text-slate-950' 
+                      : 'bg-orange-500/20 text-orange-300 border border-orange-500/40'
+                }`}>
                   <Layers className="w-4 h-4 shrink-0" />
                 </div>
                 <div className="flex flex-col items-start min-w-0">
                   <span className="tracking-tight truncate font-bold text-sm">Proyek Dalam Pengerjaan</span>
-                  <span className={`text-[10px] font-semibold leading-tight mt-0.5 ${activeView === 'proyek_pengerjaan_all' ? 'text-slate-950 font-extrabold' : 'text-orange-300/80'}`}>
+                  <span className={`text-[10px] font-semibold leading-tight mt-0.5 ${
+                    !isMenu05On
+                      ? 'text-slate-600'
+                      : activeView === 'proyek_pengerjaan_all' 
+                        ? 'text-slate-950 font-extrabold' 
+                        : 'text-orange-300/80'
+                  }`}>
                     Semua Customer
                   </span>
                 </div>
               </div>
+              {!isMenu05On && (
+                <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-950 text-slate-500 border border-slate-800 flex items-center gap-1 shrink-0">
+                  <Lock className="w-2.5 h-2.5" /> Off
+                </span>
+              )}
             </button>
 
             {/* Tombol Back / Kembali ke Halaman Login */}
@@ -3474,9 +3635,27 @@ export default function App(): any {
             </div>
           </header>
 
+          {/* Access Restricted Banner if active view's menu is off or all menus are off */}
+          {((activeView === 'rap' && !isMenu01On) ||
+            (activeView === 'overhead' && !isMenu02On) ||
+            (activeView === 'customer' && !isMenu03On) ||
+            ((activeView === 'proyek_selesai' || activeView === 'proyek_pengerjaan' || activeView === 'proyek_semua') && !isMenu04On) ||
+            (activeView === 'proyek_pengerjaan_all' && !isMenu05On)) && (
+            <div className="p-8 my-6 text-center bg-slate-900 border border-slate-800 rounded-2xl shadow-xl space-y-4 animate-fadeIn">
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center border border-amber-500/30 shadow-lg shadow-amber-500/10">
+                <Lock className="w-7 h-7" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white">Menu Ini Tidak Aktif (Off)</h3>
+                <p className="text-sm text-slate-400 max-w-md mx-auto mt-1">
+                  Hak akses untuk menu ini dinonaktifkan (nilai 0) pada profil pengguna Anda di tabel <code className="text-amber-300 font-mono text-xs bg-slate-800 px-1.5 py-0.5 rounded">SDM.User_JPU</code>. Silakan pilih menu lain yang aktif pada sidebar.
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* VIEW: Perhitungan RAP */}
-          {activeView === 'rap' && (
+          {activeView === 'rap' && isMenu01On && (
             <div className="space-y-6 py-6 animate-fadeIn">
 
               {/* Banner Summary KPIs for RAP */}
@@ -3884,7 +4063,7 @@ ORDER BY b.Cus_Name;`}
           )}
 
           {/* VIEW: Perhitungan Overhead */}
-          {activeView === 'overhead' && (
+          {activeView === 'overhead' && isMenu02On && (
             <div className="space-y-6 py-6 animate-fadeIn">
 
               {/* Container/Frame Option Pembayaran Cicilan */}
@@ -4249,7 +4428,7 @@ ORDER BY Total_Jumlah DESC;`}
           )}
 
           {/* VIEW: Customer Report */}
-          {activeView === 'customer' && (
+          {activeView === 'customer' && isMenu03On && (
             <div className="space-y-6 py-6 animate-fadeIn">
               
               {/* Chart: Visualisasi Hasil Data Penjualan Per Customer */}
@@ -4497,7 +4676,8 @@ ORDER BY b.Cus_Name;`}
 
 
           {/* VIEW: Laporan Penjualan Per Proyek */}
-          {(activeView === 'proyek_selesai' || activeView === 'proyek_pengerjaan' || activeView === 'proyek_pengerjaan_all' || activeView === 'proyek_semua') && (
+          {(((activeView === 'proyek_selesai' || activeView === 'proyek_pengerjaan' || activeView === 'proyek_semua') && isMenu04On) ||
+            (activeView === 'proyek_pengerjaan_all' && isMenu05On)) && (
             <div className="space-y-4 pt-0 pb-6 -mt-5 animate-fadeIn">
               
               {/* ComboBox Customer Filter for Proyek & Cetak PDF (Sembunyikan untuk Proyek Dalam Pengerjaan Semua Customer) */}

@@ -99,14 +99,28 @@ USE SDM;
 CREATE TABLE IF NOT EXISTS User_JPU (
   User_ID CHAR(5) PRIMARY KEY,
   User_Name VARCHAR(25) NOT NULL,
-  User_Psw CHAR(8) NOT NULL
+  User_Psw CHAR(8) NOT NULL,
+  Menu01 CHAR(1) DEFAULT '1',
+  Menu02 CHAR(1) DEFAULT '1',
+  Menu03 CHAR(1) DEFAULT '1',
+  Menu04 CHAR(1) DEFAULT '1',
+  Menu05 CHAR(1) DEFAULT '1',
+  Menu06 CHAR(1) DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO User_JPU (User_ID, User_Name, User_Psw) VALUES
-('ADM01', 'Ahmad Subagja', '123456'),
-('MGR01', 'Budi Santoso', 'admin123'),
-('STF01', 'Citra Dewi', 'jpu2026'),
-('USR01', 'Doni Pratama', 'pass1234'),
-('DIR01', 'Eka Rahmawati', 'sdm1234')
-ON DUPLICATE KEY UPDATE User_Name=VALUES(User_Name), User_Psw=VALUES(User_Psw);
+INSERT INTO User_JPU (User_ID, User_Name, User_Psw, Menu01, Menu02, Menu03, Menu04, Menu05, Menu06) VALUES
+('ADM01', 'Ahmad Subagja', '123456', '1', '1', '1', '1', '1', '1'),
+('MGR01', 'Budi Santoso', 'admin123', '1', '1', '1', '0', '0', '1'),
+('STF01', 'Citra Dewi', 'jpu2026', '0', '1', '1', '1', '0', '1'),
+('USR01', 'Doni Pratama', 'pass1234', '1', '0', '0', '1', '1', '1'),
+('DIR01', 'Eka Rahmawati', 'sdm1234', '1', '1', '1', '1', '1', '1')
+ON DUPLICATE KEY UPDATE 
+  User_Name=VALUES(User_Name), 
+  User_Psw=VALUES(User_Psw),
+  Menu01=VALUES(Menu01),
+  Menu02=VALUES(Menu02),
+  Menu03=VALUES(Menu03),
+  Menu04=VALUES(Menu04),
+  Menu05=VALUES(Menu05),
+  Menu06=VALUES(Menu06);
 

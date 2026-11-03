@@ -134,18 +134,25 @@ app.post('/api/login', async (req, res) => {
   const cleanUserId = String(user_id).trim();
   const cleanPsw = String(password).trim();
 
+  const extractMenuVal = (obj: any, key: string, defaultVal = '1') => {
+    if (!obj) return defaultVal;
+    const val = obj[key] ?? obj[key.toLowerCase()] ?? obj[key.toUpperCase()];
+    if (val === undefined || val === null) return defaultVal;
+    return String(val).trim();
+  };
+
   if (mysqlPool) {
     try {
       let rows: any = [];
       try {
         const [r]: any = await mysqlPool.query(
-          `SELECT User_ID, User_Name, User_Psw FROM SDM.User_JPU WHERE UPPER(TRIM(User_ID)) = UPPER(?)`,
+          `SELECT * FROM SDM.User_JPU WHERE UPPER(TRIM(User_ID)) = UPPER(?)`,
           [cleanUserId]
         );
         rows = r;
       } catch (e1) {
         const [r]: any = await mysqlPool.query(
-          `SELECT User_ID, User_Name, User_Psw FROM User_JPU WHERE UPPER(TRIM(User_ID)) = UPPER(?)`,
+          `SELECT * FROM User_JPU WHERE UPPER(TRIM(User_ID)) = UPPER(?)`,
           [cleanUserId]
         );
         rows = r;
@@ -159,7 +166,13 @@ app.post('/api/login', async (req, res) => {
             success: true,
             user: {
               User_ID: String(found.User_ID).trim(),
-              User_Name: String(found.User_Name).trim()
+              User_Name: String(found.User_Name).trim(),
+              Menu01: extractMenuVal(found, 'Menu01', '1'),
+              Menu02: extractMenuVal(found, 'Menu02', '1'),
+              Menu03: extractMenuVal(found, 'Menu03', '1'),
+              Menu04: extractMenuVal(found, 'Menu04', '1'),
+              Menu05: extractMenuVal(found, 'Menu05', '1'),
+              Menu06: extractMenuVal(found, 'Menu06', '1')
             }
           });
           return;
@@ -192,7 +205,13 @@ app.post('/api/login', async (req, res) => {
           success: true,
           user: {
             User_ID: String(matched.User_ID).trim(),
-            User_Name: String(matched.User_Name).trim()
+            User_Name: String(matched.User_Name).trim(),
+            Menu01: extractMenuVal(matched, 'Menu01', '1'),
+            Menu02: extractMenuVal(matched, 'Menu02', '1'),
+            Menu03: extractMenuVal(matched, 'Menu03', '1'),
+            Menu04: extractMenuVal(matched, 'Menu04', '1'),
+            Menu05: extractMenuVal(matched, 'Menu05', '1'),
+            Menu06: extractMenuVal(matched, 'Menu06', '1')
           }
         });
         return;
