@@ -26,7 +26,37 @@ if (fs.existsSync(envPath)) {
 dotenv.config({ path: envPath, override: true });
 
 const app = express();
-const port = process.env.PORT || 3000;
+
+// Parse port and host from command line or environment
+// In Cloud Run / AI Studio container environment, port 8080 is reserved for Nginx reverse proxy.
+// The Express dev app must run on port 3000 (DEFAULT_APP_PORT).
+function resolvePort(): number {
+  const portArgIndex = process.argv.indexOf('--port');
+  if (portArgIndex !== -1 && process.argv[portArgIndex + 1]) {
+    const parsed = parseInt(process.argv[portArgIndex + 1], 10);
+    if (!isNaN(parsed) && parsed !== 8080) return parsed;
+  }
+  if (process.env.DEFAULT_APP_PORT) {
+    const parsed = parseInt(process.env.DEFAULT_APP_PORT, 10);
+    if (!isNaN(parsed) && parsed !== 8080) return parsed;
+  }
+  if (process.env.PORT && process.env.PORT !== '8080') {
+    const parsed = parseInt(process.env.PORT, 10);
+    if (!isNaN(parsed) && parsed !== 8080) return parsed;
+  }
+  return 3000;
+}
+
+function resolveHost(): string {
+  const hostArgIndex = process.argv.indexOf('--host');
+  if (hostArgIndex !== -1 && process.argv[hostArgIndex + 1]) {
+    return process.argv[hostArgIndex + 1];
+  }
+  return '0.0.0.0';
+}
+
+const port = resolvePort();
+const host = resolveHost();
 
 // Enable JSON middleware and CORS for all origins
 app.use(cors());
@@ -1997,6 +2027,11 @@ if (!isProduction) {
   
   app.use(vite.middlewares);
   
+  // Handle unmatched API routes with 404 JSON instead of HTML
+  app.all('/api/*', (req, res) => {
+    res.status(404).json({ error: `API route not found: ${req.method} ${req.originalUrl}` });
+  });
+
   // Return index.html for non-api SPA paths
   app.use('*', async (req, res, next) => {
     const url = req.originalUrl;
@@ -2013,6 +2048,10 @@ if (!isProduction) {
   // Serving compiled production static files
   const distPath = path.resolve(__dirname, 'dist');
   app.use(express.static(distPath));
+
+  app.all('/api/*', (req, res) => {
+    res.status(404).json({ error: `API route not found: ${req.method} ${req.originalUrl}` });
+  });
   
   app.get('*', (req, res) => {
     const indexPath = path.resolve(distPath, 'index.html');
@@ -2025,8 +2064,8 @@ if (!isProduction) {
 }
 
 if (!process.env.VERCEL) {
-  app.listen(port, () => {
-    console.log(`[Server] Laporan Penjualan full-stack server listening on http://localhost:${port}`);
+  app.listen(port, host, () => {
+    console.log(`[Server] Laporan Penjualan full-stack server listening on http://${host}:${port}`);
   });
 }
 

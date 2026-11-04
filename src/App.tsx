@@ -96,14 +96,8 @@ export default function App(): any {
   const [loginErrorMsg, setLoginErrorMsg] = useState<string | null>(null);
   const [isSubmittingLogin, setIsSubmittingLogin] = useState<boolean>(false);
 
-  const [loggedInUser, setLoggedInUser] = useState<UserJPU | null>(() => {
-    try {
-      const saved = localStorage.getItem('jpu_logged_user');
-      return saved ? JSON.parse(saved) : null;
-    } catch {
-      return null;
-    }
-  });
+  // Selalu wajib login saat membuka aplikasi (tidak auto-login dari localStorage)
+  const [loggedInUser, setLoggedInUser] = useState<UserJPU | null>(null);
 
   const isLoggedIn = !!loggedInUser;
 
@@ -134,6 +128,13 @@ export default function App(): any {
   };
 
   useEffect(() => {
+    // Pastikan setiap membuka aplikasi harus lewat login dulu
+    try {
+      localStorage.removeItem('jpu_logged_user');
+      sessionStorage.removeItem('jpu_logged_user');
+    } catch (e) {
+      // ignore
+    }
     fetchUserList();
   }, []);
 
@@ -180,7 +181,6 @@ export default function App(): any {
       if (res.ok && data.success) {
         setFailedAttempts(0);
         setLoggedInUser(data.user);
-        localStorage.setItem('jpu_logged_user', JSON.stringify(data.user));
         setPasswordInput('');
         showToast(`Selamat datang, ${data.user.User_Name}!`, 'success');
       } else {
